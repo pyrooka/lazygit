@@ -60,6 +60,7 @@ func (gui *Gui) handleEditorKeypress(textArea *gocui.TextArea, key gocui.Key, ch
 // render the commit message length on each keypress
 func (gui *Gui) commitMessageEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) bool {
 	matched := gui.handleEditorKeypress(v.TextArea, key, ch, mod, false)
+	gui.c.Contexts().CommitMessage.AddSuggestion()
 	v.RenderTextArea()
 	gui.c.Contexts().CommitMessage.RenderCommitLength()
 	return matched

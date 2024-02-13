@@ -37,6 +37,8 @@ type CommitMessageViewModel struct {
 	onConfirm func(string, string) error
 	// invoked when pressing the switch-to-editor key binding
 	onSwitchToEditor func(string) error
+	// autocomplete related fields
+	latSuggestion string
 
 	// The message typed in before cycling through history
 	// We store this separately to 'preservedMessage' because 'preservedMessage'
@@ -118,6 +120,15 @@ func (self *CommitMessageContext) SetPanelState(
 			"togglePanelKeyBinding":    keybindings.Label(self.c.UserConfig.Keybinding.Universal.TogglePanel),
 			"switchToEditorKeyBinding": keybindings.Label(self.c.UserConfig.Keybinding.CommitMessage.SwitchToEditor),
 		})
+}
+
+func (self *CommitMessageContext) AddSuggestion() {
+	self.c.Views().CommitDescription.ClearTextArea()
+	for _, commit := range self.c.Model().Commits {
+		if strings.HasPrefix(commit.Name, self.c.Views().CommitMessage.TextArea.GetContent()) {
+			self.c.Views().CommitDescription.SetContent(commit.Name)
+		}
+	}
 }
 
 func (self *CommitMessageContext) RenderCommitLength() {
